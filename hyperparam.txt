@@ -1,0 +1,44 @@
+batch_size:
+distribution: categorical
+values:
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+dropout_rate:
+distribution: categorical
+values:
+    - 0.2
+    - 0.1
+    - 0
+epochs:
+distribution: categorical
+values:
+    - 300
+    - 125
+    - 100
+    - 50
+lr:
+distribution: categorical
+values:
+    - 1e-4
+    - 1e-3
+    - 1e-2
+lstm_dim:
+distribution: categorical
+values:
+    - 512
+    - 256
+    - 128
+    - 64
+shuffle_data:
+distribution: categorical
+values:
+    - false
+weight_decay:
+distribution: categorical
+values:
+    - 0
+    - 0.1
+    - 0.2

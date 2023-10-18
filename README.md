@@ -51,9 +51,9 @@ our model has three sub-neural networks:
 
 `calorie_predictor.py` is the calorie predictor of our proposed joint embedding framework.
 
-<!-- ### Hyperparameter Tuning
+### Hyperparameter Tuning
 
-TODO -->
+`hyperparam.txt` contains the hyperparameters we used for our experiments. We used [weights & bias](https://wandb.ai/) to track the hyperparameter sweep.
 
 ## Datasets
 
