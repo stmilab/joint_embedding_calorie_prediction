@@ -108,7 +108,7 @@ def declare_multimodal_model(
     elif img_backbone.lower() == "resnet":
         img_model = vision_models.resnet50(pretrained=True).to(flags.device)
     else:
-        raise NotImplementedError("Currently only support ViT as image backbone!")
+        raise NotImplementedError("Currently only support ViT, VGG< and ResNET as image backbone!")
     # Combining the multimodal model
     multimodal_model = ol.MultiModalModel(
         [img_model, cgm_model],
