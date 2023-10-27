@@ -220,7 +220,7 @@ if __name__ == "__main__":
             carb_pred = nutrient_predictor(merged_embedding)
             # rmsre loss calculation
             with torch.no_grad():
-                carb_loss = ((carb_label - carb_pred.cpu()) / (carb_label + 5)) ** 2
+                carb_loss = ((carb_label - carb_pred.cpu()) / (carb_label)) ** 2
             epoch_total_loss.extend(list(carb_loss))
         carb_rmsre = np.mean(np.array([i[0] for i in epoch_total_loss])) ** 0.5
         updated = ""
