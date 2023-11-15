@@ -1,6 +1,6 @@
 # Joint Embedding of Food Photographs and Blood Glucose for Improved Calorie Estimation (BHI 2023)
 
-This is the code Implementation for our accepted IEEE BHI-2023 manuscript: `Joint Embedding of Food Photographs and Blood Glucose for Improved Calorie Estimation` (link to BHI [preprint](https://bhiconference.github.io/BHI2023/2023/pdfs/1570917758.pdf).
+This is the code Implementation for our accepted IEEE BHI-2023 manuscript: `Joint Embedding of Food Photographs and Blood Glucose for Improved Calorie Estimation` (link to BHI [preprint](https://bhiconference.github.io/BHI2023/2023/pdfs/1570917758.pdf)).
 
 Corresponding Author: [Sicong Huang](mailto:siconghuang@tamu.edu).
 
