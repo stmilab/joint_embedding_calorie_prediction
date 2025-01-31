@@ -11,7 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 # "cgm_meals_breakfastlunch.json", "img_meals112.json", "demographics-microbiome-data.json"
 
-def make_figlet(text: str, font="smslant", to_print: bool=True):
+
+def make_figlet(text: str, font="smslant", to_print: bool = True):
     f = Figlet(font=font)
     text = f.renderText(text)
     if to_print:
@@ -19,12 +20,9 @@ def make_figlet(text: str, font="smslant", to_print: bool=True):
     else:
         return text
 
+
 # load data from files
-def load_data_from_json(
-    cgm_path  = None,
-    img_path  = None,
-    demo_viome_path  = None
-):
+def load_data_from_json(cgm_path=None, img_path=None, demo_viome_path=None):
     """
     loads CGM, IMG, and DEMOGRAPHIC/VIOME data, as specified
 
@@ -40,19 +38,24 @@ def load_data_from_json(
 
     cgm_data = None if cgm_path == None else cgm_data_loader(cgm_path)
     img_data = None if img_path == None else img_data_loader(img_path)
-    demo_viome_data = None if demo_viome_path == None else demo_viome_data_loader(demo_viome_path)
+    demo_viome_data = (
+        None if demo_viome_path == None else demo_viome_data_loader(demo_viome_path)
+    )
 
     return cgm_data, img_data, demo_viome_data
+
 
 def cgm_data_loader(cgm_path: str):
     with open(cgm_path) as json_file:
         cgm_meals = json.load(json_file)
     return cgm_meals
 
+
 def img_data_loader(img_path: str):
     with open(img_path) as json_file:
         img_meals = json.load(json_file)
     return img_meals
+
 
 def demo_viome_data_loader(demo_viome_path: str):
     with open(demo_viome_path) as json_file:
@@ -93,7 +96,7 @@ def demo_viome_data_loader(demo_viome_path: str):
         if "Body weight" in data and "Height" in data:
             weight_lb = data["Body weight"]
             height_inches = data["Height"]
-            data["BMI"] = 703 * weight_lb / (height_inches ** 2)
+            data["BMI"] = 703 * weight_lb / (height_inches**2)
 
     # Create a MinMaxScaler instance for BMI
     scaler_bmi = MinMaxScaler()
@@ -117,7 +120,11 @@ def demo_viome_data_loader(demo_viome_path: str):
     scaler_a1c = MinMaxScaler()
 
     # Extract the "A1c PDL (Lab)" values and reshape them to a 2D array
-    a1c_values = [[data["A1c PDL (Lab)"]] for data in demo_viome.values() if "A1c PDL (Lab)" in data]
+    a1c_values = [
+        [data["A1c PDL (Lab)"]]
+        for data in demo_viome.values()
+        if "A1c PDL (Lab)" in data
+    ]
 
     # Fit the scaler to the data to compute min and max values for A1c PDL (Lab)
     scaler_a1c.fit(a1c_values)
@@ -135,8 +142,11 @@ def demo_viome_data_loader(demo_viome_path: str):
     scaler_glu = MinMaxScaler()
 
     # Extract the "Fasting GLU - PDL (Lab)" values and reshape them to a 2D array
-    glu_values = [[data["Fasting GLU - PDL (Lab)"]] for data in demo_viome.values() if
-                    "Fasting GLU - PDL (Lab)" in data]
+    glu_values = [
+        [data["Fasting GLU - PDL (Lab)"]]
+        for data in demo_viome.values()
+        if "Fasting GLU - PDL (Lab)" in data
+    ]
 
     # Fit the scaler to the data to compute min and max values for Fasting GLU - PDL (Lab)
     scaler_glu.fit(glu_values)
@@ -154,7 +164,9 @@ def demo_viome_data_loader(demo_viome_path: str):
     scaler_insulin = MinMaxScaler()
 
     # Extract the "Insulin" values and reshape them to a 2D array
-    insulin_values = [[data["Insulin"]] for data in demo_viome.values() if "Insulin" in data]
+    insulin_values = [
+        [data["Insulin"]] for data in demo_viome.values() if "Insulin" in data
+    ]
 
     # Fit the scaler to the data to compute min and max values for Insulin
     scaler_insulin.fit(insulin_values)
@@ -169,17 +181,23 @@ def demo_viome_data_loader(demo_viome_path: str):
 
     # 7. Top 6 Bacteria (binary to list in binary)
     # "Tannerella sp. 6_1_58FAA_CT1", (missing from data)
-    top_6 = ["Alistipes onderdonkii", "Clostridiales bacterium VE202-18", "Filifactor alocis ATCC 35896",
-                "Lachnospiraceae bacterium 3-1", "Bifidobacterium adolescentis strain BBMN23",
-                "Coprococcus sp. HPP0048"]
+    top_6 = [
+        "Alistipes onderdonkii",
+        "Clostridiales bacterium VE202-18",
+        "Filifactor alocis ATCC 35896",
+        "Lachnospiraceae bacterium 3-1",
+        "Bifidobacterium adolescentis strain BBMN23",
+        "Coprococcus sp. HPP0048",
+    ]
     # Iterate over participants in the JSON data
     for user_id, data in demo_viome.items():
         # Create a dict of binary values for the selected bacteria
         bacteria_list = {bacteria: data[bacteria] for bacteria in top_6}
         # Add the dict to the participant's data
-        data['Top_6_Bacteria_List'] = bacteria_list
+        data["Top_6_Bacteria_List"] = bacteria_list
 
     return demo_viome
+
 
 # Splits meal_ids into test/train sets pseudo-randomly
 def get_train_test_meals(
@@ -202,14 +220,16 @@ def get_train_test_meals(
         train_meals (list): meals selected for training
         test_meals (list): meals selected for testing
     """
-    meal_ids = sorted(cgm_meals.keys() & img_meals.keys()) # sorting into same order is necessary for seed to work (since dict keys stored in variable order)
+    meal_ids = sorted(
+        cgm_meals.keys() & img_meals.keys()
+    )  # sorting into same order is necessary for seed to work (since dict keys stored in variable order)
 
     tol = len(meal_ids)
     test_num = int(tol * test_ratio)
 
     if test_random:
         np.random.seed(seed)
-        test_meals = np.random.choice(meal_ids, test_num) # set seed
+        test_meals = np.random.choice(meal_ids, test_num)  # set seed
     else:
         test_meals = list(range(test_num))
 
@@ -217,16 +237,17 @@ def get_train_test_meals(
 
     return train_meals, test_meals
 
+
 # custom Pytorch data loader
 class multimodal_dataset(Dataset):
-    """ CGM + Image + Demographics + Viome dataset."""
+    """CGM + Image + Demographics + Viome dataset."""
 
     def __init__(
         self,
-        partition, # TODO: is this just name???
-        cgm_meals = None,
-        img_meals = None,
-        demo_viome_data = None, # Add demographics data as an argument
+        partition,  # whether it's train or test
+        cgm_meals=None,
+        img_meals=None,
+        demo_viome_data=None,  # Add demographics data as an argument
         train_names=None,
         test_names=None,
         batch_size=16,
@@ -236,8 +257,9 @@ class multimodal_dataset(Dataset):
         normalizer=None,
     ):
         self.bz = batch_size
+        self.demo_viome_data = demo_viome_data
         self.drop_last = drop_last
-        self.max_len = 180 # TODO: should this be hard coded or a tunable parameter?
+        self.max_len = 180  # 3 hours of CGM data (1 minute inter)
 
         self.img_data, self.cgm_data, self.auc_data = [], [], []
         (
@@ -248,9 +270,9 @@ class multimodal_dataset(Dataset):
             self.a1c,
             self.glu,
             self.insulin,
-            self.top10
+            self.top10,
         ) = ([], [], [], [], [], [], [], [])
-        
+
         (
             self.calorie_label,
             self.labels2,
@@ -268,13 +290,15 @@ class multimodal_dataset(Dataset):
         for n in names:
             if (
                 cgm_meals[n]["protein"] + cgm_meals[n]["fat"] + cgm_meals[n]["fiber"]
-                == 0 # TODO: what if float? Equality might be too strong. Could switch to <0.01?
+                == 0  # TODO: what if float? Equality might be too strong. Could switch to <0.01?
             ):
                 continue
 
             # Extract demographics data based on the user ID
             user_id = n.split("_")[0]
-            demographics_info = self.demo_viome_data.get(user_id, {})  # Replace {} with a default value if necessary
+            demographics_info = self.demo_viome_data.get(
+                user_id, {}
+            )  # Replace {} with a default value if necessary
 
             # Store demographics data as needed
             self.race.append(demographics_info.get("Race", -1))
@@ -307,7 +331,7 @@ class multimodal_dataset(Dataset):
                     cgm_meals[n]["protein"]
                     + cgm_meals[n]["fat"]
                     + cgm_meals[n]["fiber"]
-                ) # calculates the ratio of carbohydrates to the sum of protein, fat, and fiber for the current meal
+                )  # calculates the ratio of carbohydrates to the sum of protein, fat, and fiber for the current meal
             )
             self.carb_label.append(cgm_meals[n]["carbs"])
             self.protein_label.append(cgm_meals[n]["protein"])
@@ -322,7 +346,7 @@ class multimodal_dataset(Dataset):
         image = self.img_data[idx]
         signal = self.cgm_data[idx]
         label = self.labels[idx]
-        if self.transform: # FIXME: TODO: the transform function is not defined
+        if self.transform:  # FIXME: TODO: the transform function is not defined
             image = self.transform(image)
 
         return (
@@ -335,7 +359,7 @@ class multimodal_dataset(Dataset):
         num_fea = len(signal)
         length = len(signal[0])
         if length > self.max_len:
-            data = np.array(signal)[:, :self.max_len]
+            data = np.array(signal)[:, : self.max_len]
         if length <= self.max_len:
             # print(222, np.shape(list(np.concatenate((signal, np.zeros((2, max_len-length))), -1))))
             data = np.concatenate(
@@ -474,6 +498,7 @@ class multimodal_dataset(Dataset):
     def collate(self, batch):
         (image, signal, labels) = zip(*batch)
         return [image, signal, labels]
+
 
 # def add_demo_viome_to_meals():
 #     '''
