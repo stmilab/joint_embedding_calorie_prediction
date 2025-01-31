@@ -21,10 +21,10 @@ def make_figlet(text: str, font="smslant", to_print: bool=True):
 
 # load data from files
 def load_data_from_json(
-    cgm_path: str|None=None,
-    img_path: str|None=None,
-    demo_viome_path: str|None=None
-) -> Tuple[dict|None, dict|None, dict|None]:
+    cgm_path  = None,
+    img_path  = None,
+    demo_viome_path  = None
+):
     """
     loads CGM, IMG, and DEMOGRAPHIC/VIOME data, as specified
 
@@ -224,9 +224,9 @@ class multimodal_dataset(Dataset):
     def __init__(
         self,
         partition, # TODO: is this just name???
-        cgm_meals: None|dict = None,
-        img_meals: None|dict = None,
-        demo_viome_data: None|dict = None, # Add demographics data as an argument
+        cgm_meals = None,
+        img_meals = None,
+        demo_viome_data = None, # Add demographics data as an argument
         train_names=None,
         test_names=None,
         batch_size=16,
